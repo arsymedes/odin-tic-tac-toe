@@ -366,33 +366,160 @@ template {
 body {
   display: grid;
   place-items: center;
+  background-color: black;
 }
 
-h1 {
+.title {
   font-size: 3rem;
-  margin-top: 50px;
+  margin: 50px;
+  color: white;
 }
 
 .board {
   display: grid;
   grid-template-columns: repeat(3, 125px);
   grid-template-rows: repeat(3, 125px);
-  background-color: rgb(151, 151, 180);
-  gap: 2px;
+  background-color: var(--bg-color);
+  gap: 5px;
 }
 
 .board > div {
-  background-color: white;
+  background-color: black;
   display: grid;
   place-items: center;
+  cursor: pointer;
 }
 
 .board .fa-xmark {
-  font-size: 6rem;
+  font-size: 6.5rem;
   color: var(--main-color);
 }
 
 .board .fa-circle {
-  font-size: 4rem;
+  font-size: 4.5rem;
   color: var(--comp-color);
+}
+
+.preview {
+  opacity: 0.8;
+}
+
+.players {
+  color: white;
+  font-size: 1.5rem;
+  font-weight: 600;
+  
+  margin-top: 35px;
+  display: flex;
+  gap: 50px;
+}
+
+.players .player-info {
+  display: flex;
+  justify-content: center;
+  width: 200px;
+  gap: 10px;
+}
+
+.players .player {
+  cursor: pointer;
+}
+
+.players .fa-circle {
+  font-size: 1.3rem;
+}
+
+.popup {
+  background-color: rgba(255, 255, 255, 0.1);
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  position: absolute;
+  top: 0;
+  display: none;
+}
+
+.popup .popup-bg {
+  background-color: black;
+  box-sizing: border-box;
+  width: 400px;
+  padding: 15px 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 15px;
+  border: 1px white solid;
+  position: relative;
+}
+
+.popup form > * {
+  margin-top: 15px;
+}
+
+.cancel {
+  position: absolute;
+  top: -30px;
+  right: -15px;
+  background-color: rgb(158, 73, 73);
+  opacity: 0.8;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  font-size: 2rem;
+  cursor: pointer;
+}
+
+.form-section {
+  background-color: var(--bg-color);
+  height: 50px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  border-radius: 10px;
+}
+
+.form-section:hover,
+.form-section:focus {
+  box-shadow: 0 0 4px rgb(94, 93, 93);
+}
+
+.form-section i{
+  font-size: 1.5rem;
+  margin: 0 20px 0 15px;
+}
+
+.form-section input {
+  background-color: transparent;
+  border: none;
+  font-weight: 500;
+  font-size: 1.1rem;
+  width: 100%;
+}
+
+.form-section input:focus {
+  outline: none;
+}
+
+.pink-button {
+  width: 100%;
+  margin: 25px 0 15px;
+  height: 40px;
+  cursor: pointer;
+  border-radius: 5px;
+  border: none;
+  font-weight: 500;
+  font-size: 1.1rem;
+  color: white;
+  background-color: var(--main-color);
+  opacity: 0.8;
+}
+
+button:hover {
+  opacity: 1;
+}
+
+.popup h1 {
+  color: white;
+  margin-bottom: 0;
 }

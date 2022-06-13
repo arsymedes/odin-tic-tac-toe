@@ -1,6 +1,6 @@
 const gameBoard = (() => {
   const board = document.querySelector(".board");
-  const grid = ["", "", "", "", "", "", "", "", ""];
+  let grid = ["", "", "", "", "", "", "", "", ""];
 
   const displayGrid = () => {
     boardContent = ''
@@ -10,38 +10,58 @@ const gameBoard = (() => {
       else boardContent += `<div data-num="${index}" class="empty"></div>`;
     }
     board.innerHTML = boardContent;
-
     document.querySelectorAll(".empty").forEach((div) => {
-      div.addEventListener("click", player1.addMark)
+      div.addEventListener("click", gameEngine.currentPlayer().addMark)
     })
   }
 
+  function alterGrid(index, mark) {
+    grid[index] = mark;
+  }
+
+  function getGrid() {
+    return grid;
+  }
+
+  function resetBoard() {
+    grid = ["", "", "", "", "", "", "", "", ""]
+    displayGrid()
+  }
+
   return {
-    grid, 
+    getGrid,
+    alterGrid, 
     displayGrid,
+    resetBoard,
   };
 })();
 
-const Player = (mark) => {
+const Player = (mark, name) => {
   let markNum = 0
   if (mark == "cross") markNum = 1;
 
   function addMark() {
     let mark = gameEngine.currentPlayer().markNum;
     let index = this.dataset.num;
-    gameBoard.grid[index] = mark;
-    console.log(gameEngine.endCondition(gameBoard.grid))
-    gameBoard.displayGrid()
+    gameBoard.alterGrid(index, mark);
+
+    if (gameEngine.endCondition(gameBoard.getGrid())) {
+      gameEngine.gameEnd();
+    }
+
+    gameEngine.turn += 1;
+    gameBoard.displayGrid();
   }
 
   return {
     addMark,
     markNum,
+    name,
   }
 };
 
 const Computer = (mark) => {
-  let markNum = 0
+  let markNum = 0;
   if (mark == "cross") markNum = 1;
 
   function addMark() {
@@ -51,40 +71,81 @@ const Computer = (mark) => {
   return {
     addMark,
     markNum,
-  }
+    name,
+  };
 };
 
 const gameEngine = (() => {
   let turn = 0;
+
+  function initializeGame() {
+    addNameForm();
+    gameBoard.displayGrid();
+  }
   
   function currentPlayer() {
-    if (turn % 2) {
-      turn++;
-      return player1;
-    } else if (!(turn % 2)) {
-      turn++;
-      return player2;
+    if (gameEngine.turn % 2 === 0) {
+      return human1;
+    } else if (!(gameEngine.turn % 2 === 0)) {
+      return human2;
     }
+  }
+
+  function addNameForm() {
+    let activePlayer = ""
+    document.querySelectorAll(".player").forEach((player) => {
+      player.addEventListener("click", function() {
+        document.querySelector('.name-add').style.display = "grid";
+        activePlayer = player;
+      })
+    })
+    document.querySelector(".submit").addEventListener("click", (event) => {
+      event.preventDefault();
+      document.querySelector('.name-add').style.display = "none";
+      activePlayer.innerHTML = document.querySelector(".player-name").value;
+      if (activePlayer.dataset.player === "player1") {
+        human1.name = document.querySelector(".player-name").value;
+      } else if (activePlayer.dataset.player === "player2") {
+        human2.name = document.querySelector(".player-name").value;
+      }
+      document.querySelector(".player-name").value = ""
+    })
+    document.querySelector('.cancel').addEventListener("click", function() {
+      document.querySelector('.name-add').style.display = "none";
+    });
+    document.querySelector(".new-game").addEventListener("click", function() {
+      document.querySelector(".popup.game-end").style.display = "none";
+      gameEngine.turn = 0;
+      gameBoard.resetBoard()
+    })
   }
 
   function endCondition(list) {
     for (let i = 0; i < 3; i++) {
-      if (!isNaN(parseInt(list[3*i])) && list[3*i] === list[3*i+1] && list[3*i+1] === list[3*i+2]) return true;
-      if (!isNaN(parseInt(list[i])) && list[i] === list[i+3] && list[i+3] === list[i+6]) return true;
+      if (!isNaN(parseInt(list[3*i])) && list[3*i] === list[3*i+1] && list[3*i+1] === list[3*i+2]) return currentPlayer();
+      if (!isNaN(parseInt(list[i])) && list[i] === list[i+3] && list[i+3] === list[i+6]) return currentPlayer();
     };
-    if (!isNaN(parseInt(list[0])) && list[0] === list[4] && list[4] === list[8]) return true;
-    if (!isNaN(parseInt(list[2])) && list[2] === list[4] && list[4] === list[6]) return true;
-    return false
+    if (!isNaN(parseInt(list[0])) && list[0] === list[4] && list[4] === list[8]) return currentPlayer();
+    if (!isNaN(parseInt(list[2])) && list[2] === list[4] && list[4] === list[6]) return currentPlayer();
+    return false;
   }
-  
+
+  function gameEnd() {
+    message = `${currentPlayer().name} Wins!`;
+    document.querySelector(".popup-bg h1").innerHTML = message;
+    document.querySelector(".popup.game-end").style.display = "grid";
+  }
 
   return {
+    initializeGame,
     currentPlayer,
     endCondition,
+    gameEnd,
+    turn,
   }
 })();
 
-const player1 = Player("cross")
-const player2 = Player("circle")
-gameBoard.displayGrid()
 
+const human1 = Player("cross", "Player 1")
+const human2 = Player("circle", "Player 2")
+gameEngine.initializeGame()

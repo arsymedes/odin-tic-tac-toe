@@ -12,8 +12,36 @@
     <title>Tic Tac Toe</title>
   </head>
   <body>
-    <h1>Tic Tac Toe</h1>
+    <h1 class="title">Tic Tac Toe</h1>
     <div class="board">
+    </div>
+    <div class="players">
+      <div class="player-info">
+        <div class="player" data-player="player1">Player 1</div>
+        <div>(<i class="fa-solid fa-xmark"></i>)</div>
+      </div>
+      <div>vs</div>
+      <div class="player-info">
+        <div class="player" data-player="player2">Player 2</div>
+        <div>(<i class="fa-regular fa-circle"></i>)</div>
+      </div>
+    </div>
+    <div class="popup name-add">
+      <form class="popup-bg" action="" method="get" id="my-form">
+        <div class="form-section">
+          <label for="title"><i class="fa-solid fa-user"></i></label>
+          <input type="text" class="player-name" name="title" placeholder="Insert Your Name Here :D">
+        </div>
+        <button type="submit" form="my-form" class="pink-button submit">Submit</button>
+        <button type="button" class="cancel"><i class="fa-solid fa-xmark"></i></button>
+      </form> 
+    </div>
+    <div class="popup game-end">
+      <div class="popup-bg">
+        <h1>Player 1 Wins!</h1>
+        <button class="pink-button new-game">New Game</button>
+        </div>
+      </div>
     </div>
   </body>
   <script src="./javascript.js"></script>
