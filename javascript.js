@@ -5,13 +5,22 @@ const gameBoard = (() => {
   const displayGrid = () => {
     boardContent = ''
     for (let [index, sign] of grid.entries()) {
-      if (sign === 1) boardContent += `<div data-num="${index}"><i class="fa-solid fa-xmark"></i></div>`;
-      else if (sign === 0) boardContent += `<div data-num="${index}"><i class="fa-regular fa-circle"></i></div>`;
+      if (sign === 0) boardContent += `<div data-num="${index}"><i class="fa-regular fa-circle"></i></div>`;
+      else if (sign === 1) boardContent += `<div data-num="${index}"><i class="fa-solid fa-xmark"></i></div>`;
+      else if (sign === 2) boardContent += `<div data-num="${index}" class="shadow"><i class="fa-regular fa-circle"></i></div>`;
+      else if (sign === 3) boardContent += `<div data-num="${index}" class="shadow"><i class="fa-solid fa-xmark"></i></div>`;
       else boardContent += `<div data-num="${index}" class="empty"></div>`;
     }
     board.innerHTML = boardContent;
+    
     document.querySelectorAll(".empty").forEach((div) => {
       div.addEventListener("click", gameEngine.currentPlayer().addMark)
+      div.addEventListener("mouseenter", gameEngine.currentPlayer().shadowMark)
+    })
+
+    document.querySelectorAll(".shadow").forEach((div) => {
+      div.addEventListener("click", gameEngine.currentPlayer().addMark)
+      div.addEventListener("mouseleave", gameEngine.currentPlayer().unShadowMark)
     })
   }
 
@@ -53,8 +62,23 @@ const Player = (mark, name) => {
     gameBoard.displayGrid();
   }
 
+  function shadowMark() {
+    let mark = gameEngine.currentPlayer().markNum + 2;
+    let index = this.dataset.num;
+    gameBoard.alterGrid(index, mark);
+    gameBoard.displayGrid();
+  }
+
+  function unShadowMark() {
+    let index = this.dataset.num;
+    gameBoard.alterGrid(index, "");
+    gameBoard.displayGrid();
+  }
+
   return {
     addMark,
+    shadowMark,
+    unShadowMark,
     markNum,
     name,
   }
@@ -127,11 +151,15 @@ const gameEngine = (() => {
     };
     if (!isNaN(parseInt(list[0])) && list[0] === list[4] && list[4] === list[8]) return currentPlayer();
     if (!isNaN(parseInt(list[2])) && list[2] === list[4] && list[4] === list[6]) return currentPlayer();
+    if (gameBoard.getGrid().every(mark => (!isNaN(parseInt(mark))))) return "draw"
     return false;
   }
 
   function gameEnd() {
-    message = `${currentPlayer().name} Wins!`;
+    let message = `${currentPlayer().name} Wins!`;
+    if (endCondition(gameBoard.getGrid()) === "draw") {
+      message = "It's a Draw!"
+    }
     document.querySelector(".popup-bg h1").innerHTML = message;
     document.querySelector(".popup.game-end").style.display = "grid";
   }

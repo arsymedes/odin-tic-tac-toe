@@ -404,6 +404,14 @@ body {
   opacity: 0.8;
 }
 
+.shadow .fa-xmark{
+  color: rgba(223, 159, 202, 0.5);
+}
+
+.shadow .fa-circle{
+  color: rgba(108, 150, 90, 0.5);
+}
+
 .players {
   color: white;
   font-size: 1.5rem;
